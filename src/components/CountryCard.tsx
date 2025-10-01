@@ -1,9 +1,12 @@
+import {Link} from "react-router-dom"
+
 interface CountryCardProps {
   name: string
   population: number
   region: string
   capital: string
   flag: string
+  code: string
 }
 
 export default function CountryCard({
@@ -12,8 +15,10 @@ export default function CountryCard({
   region,
   capital,
   flag,
+  code,
 }: CountryCardProps) {
   return (
+    <Link to={`/country/${code}`} className="no-underline">
     <div className="bg-white dark:bg-elDark rounded overflow-hidden shadow-md mx-auto w-64">
       <img
         src={flag}
@@ -33,5 +38,6 @@ export default function CountryCard({
         </p>
       </div>
     </div>
+    </Link>
   )
 }

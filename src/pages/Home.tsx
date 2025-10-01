@@ -93,6 +93,7 @@ export default function Home() {
             region={country.region}
             capital={country.capital}
             flag={country.flags.png}
+            code={country.code}
           />
         ))}
       </div>

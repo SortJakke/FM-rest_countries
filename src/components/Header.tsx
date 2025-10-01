@@ -1,5 +1,6 @@
 import { useContext } from "react"
 import { ThemeContext } from "../context/ThemeContext"
+import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons"
 
@@ -8,7 +9,9 @@ function Header() {
 
   return (
     <header className="flex justify-between items-center px-4 py-6 bg-elLight dark:bg-elDark">
-      <h1 className="text-xl font-bold">Where in the world?</h1>
+      <Link to="/" className="no-underline">
+        <h1 className="text-xl font-bold">Where in the world?</h1>
+      </Link>
       <button
         onClick={toggleTheme}
         className="flex items-center gap-2 text-sm font-semibold"
