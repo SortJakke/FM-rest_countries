@@ -1,81 +1,43 @@
 import SearchBar from "../components/SearchBar"
 import RegionFilter from "../components/RegionFilter"
 import CountryCard from "../components/CountryCard"
+import { useState, useEffect } from "react"
 
-// Mock data for demonstration purposes
-const countries = [
-  {
-    name: "Germany",
-    population: 81770900,
-    region: "Europe",
-    capital: "Berlin",
-    flags: { png: "https://flagcdn.com/w320/de.png" },
-    code: "DE",
-  },
-  {
-    name: "	United States of America",
-    population: 329345637,
-    region: "Americas",
-    capital: "Washington D.C.",
-    flags: { png: "https://flagcdn.com/w320/us.png" },
-    code: "US",
-  },
-  {
-    name: "Brazil",
-    population: 212600000,
-    region: "Americas",
-    capital: "Brasília",
-    flags: { png: "https://flagcdn.com/w320/br.png" },
-    code: "BR",
-  },
-  {
-    name: "Iceland",
-    population: 334300,
-    region: "Europe",
-    capital: "Reykjavik",
-    flags: { png: "https://flagcdn.com/w320/is.png" },
-    code: "IS",
-  },
-  {
-    name: "Afghanistan",
-    population: 27657145,
-    region: "Asia",
-    capital: "Kabul",
-    flags: { png: "https://flagcdn.com/w320/af.png" },
-    code: "AF",
-  },
-  {
-    name: "Aland Islands",
-    population: 28875,
-    region: "Europe",
-    capital: "Mariehamn",
-    flags: { png: "https://flagcdn.com/w320/ax.png" },
-    code: "AX",
-  },
-  {
-    name: "Albania",
-    population: 2886026,
-    region: "Europe",
-    capital: "Tirana",
-    flags: { png: "https://flagcdn.com/w320/al.png" },
-    code: "AL",
-  },
-  {
-    name: "Algeria",
-    population: 40400000,
-    region: "Africa",
-    capital: "Algier",
-    flags: { png: "https://flagcdn.com/w320/dz.png" },
-    code: "DZ",
-  },
-]
+type Country = {
+  name: { common: string }
+  population: number
+  region: string
+  capital?: string[]
+  flags: { png: string }
+  cca3: string
+}
 
 export default function Home() {
+  const [countries, setCountries] = useState<Country[]>([])
+  const [filtered, setFiltered] = useState<Country[]>([])
+  const [region, setRegion] = useState<string>("")
+
+  useEffect(() => {
+    fetch("https://restcountries.com/v3.1/all?fields=name,capital,region,population,flags,cca3")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!region) return setCountries(data)
+        setCountries(data.filter((c: Country) => c.region === region))
+      })
+      .catch((err) => console.error("Error fetching countries:", err))
+  }, [region])
+  useEffect(() => {
+    setFiltered(countries)
+  }, [countries])
+
   const handleSearch = (query: string) => {
-    console.log("Search:", query)
+    const results = countries.filter((country) =>
+      country.name.common.toLowerCase().includes(query.toLowerCase())
+    )
+    setFiltered(results)
   }
   const handleRegionSelect = (region: string) => {
-    console.log("Selected region:", region)
+    setRegion(region)
   }
 
   return (
@@ -85,15 +47,15 @@ export default function Home() {
         <RegionFilter onSelect={handleRegionSelect} />
       </div>
       <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 my-6">
-        {countries.map((country) => (
+        {filtered.slice(0, 25).map((country) => (
           <CountryCard
-            key={country.code}
-            name={country.name}
+            key={country.cca3}
+            name={country.name.common}
             population={country.population}
             region={country.region}
-            capital={country.capital}
+            capital={country.capital?.[0] || "N/A"}
             flag={country.flags.png}
-            code={country.code}
+            code={country.cca3}
           />
         ))}
       </div>
