@@ -18,7 +18,7 @@ export default function CountryCard({
   code,
 }: CountryCardProps) {
   return (
-    <Link to={`/country/${code}`} className="no-underline max-w-80">
+    <Link to={`/country/${code}`} className="no-underline max-w-80" aria-label={`View ${name} detail`} tabIndex={0}>
     <div className="h-full bg-elLight dark:bg-elDark rounded overflow-hidden shadow">
       <img
         src={flag}

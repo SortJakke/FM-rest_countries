@@ -10,11 +10,17 @@ function Header() {
   return (
     <header className="bg-elLight dark:bg-elDark shadow">
       <div className="max-w-7xl mx-auto flex items-center justify-between py-6 px-4">
-        <Link to="/" className="no-underline">
+        <Link
+          to="/"
+          className="no-underline"
+          aria-label="Go to home page"
+          tabIndex={0}
+        >
           <h1 className="text-xl font-bold">Where in the world?</h1>
         </Link>
         <button
           onClick={toggleTheme}
+          aria-label="Theme Toggle"
           className="flex items-center gap-2 text-sm font-semibold"
         >
           <FontAwesomeIcon icon={theme === "light" ? faMoon : faSun} />

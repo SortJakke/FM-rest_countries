@@ -15,18 +15,29 @@ type Country = {
 export default function Home() {
   const [countries, setCountries] = useState<Country[]>([])
   const [filtered, setFiltered] = useState<Country[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
+  const [error, setError] = useState<string | null>(null)
   const [region, setRegion] = useState<string>("")
 
   useEffect(() => {
-    fetch(
+    setLoading(true)
+    setError(null)
+    let url =
       "https://restcountries.com/v3.1/all?fields=name,capital,region,population,flags,cca3"
-    )
+    if (region) {
+      url = `https://restcountries.com/v3.1/region/${region}?fields=name,capital,region,population,flags,cca3`
+    }
+    fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        if (!region) return setCountries(data)
-        setCountries(data.filter((c: Country) => c.region === region))
+        setCountries(data)
+        setLoading(false)
       })
-      .catch((err) => console.error("Error fetching countries:", err))
+      .catch((err) => {
+        console.error("Error fetching countries:", err)
+        setError("Error fetching countries")
+        setLoading(false)
+      })
   }, [region])
   useEffect(() => {
     setFiltered(countries)
@@ -49,6 +60,16 @@ export default function Home() {
         <RegionFilter onSelect={handleRegionSelect} />
       </div>
       <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 my-6 px-10 md:px-4">
+        {loading && (
+          <div aria-live="polite" className="text-gray-500">
+            loading...
+          </div>
+        )}
+        {error && (
+          <div aria-live="assertive" className="text-red-500">
+            {error}
+          </div>
+        )}
         {filtered.slice(0, 60).map((country) => (
           <CountryCard
             key={country.cca3}

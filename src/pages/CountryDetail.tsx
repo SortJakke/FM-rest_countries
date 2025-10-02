@@ -19,18 +19,22 @@ interface Country {
 
 export default function CountryDetail() {
   const { code } = useParams()
+
   const [country, setCountry] = useState<Country | null>(null)
   const [borderCountries, setBorderCountries] = useState<Country[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!code) return
-    fetch(
-      `https://restcountries.com/v3.1/alpha/${code}?fields=name,capital,region,subregion,borders,population,flags,tld,currencies,languages`
-    )
+    setLoading(true)
+    setError(null)
+    const url = `https://restcountries.com/v3.1/alpha/${code}?fields=name,capital,region,subregion,borders,population,flags,tld,currencies,languages`
+    fetch(url)
       .then((res) => res.json())
       .then((data) => {
         const countryData = data
         setCountry(data)
+        setLoading(false)
         if (countryData.borders?.length) {
           fetch(
             `https://restcountries.com/v3.1/alpha?codes=${countryData.borders.join(
@@ -41,7 +45,11 @@ export default function CountryDetail() {
             .then((borderData) => setBorderCountries(borderData))
         }
       })
-      .catch((err) => console.error("Error fetching country details:", err))
+      .catch((err) => {
+        console.error("Error fetching country details:", err)
+        setError("Error fetching country details")
+        setLoading(false)
+      })
   }, [code])
 
   if (!country) {
@@ -60,10 +68,21 @@ export default function CountryDetail() {
 
   return (
     <div className="max-w-7xl mx-auto p-8">
+      {loading && (
+        <div aria-live="polite" className="text-gray-500">
+          loading...
+        </div>
+      )}
+      {error && (
+        <div aria-live="assertive" className="text-red-500">
+          {error}
+        </div>
+      )}
       <div className="grid lg:grid-cols-2 justify-center gap-8">
         <Link
           to="/"
           className="lg:col-span-2 flex w-fit items-center gap-2 px-8 py-2 bg-elLight dark:bg-elDark rounded shadow-md"
+          aria-label="Go back to home page"
         >
           <FontAwesomeIcon icon={faArrowLeft} className="pointer-events-none" />
           Back
@@ -114,6 +133,7 @@ export default function CountryDetail() {
                     key={border.cca3}
                     to={`/country/${border.cca3}`}
                     className="px-3 py-1 bg-elLight dark:bg-elDark rounded shadow text-sm"
+                    aria-label={`View ${border.name.common} detail`}
                   >
                     {border.name.common}
                   </Link>
