@@ -18,8 +18,8 @@ export default function CountryCard({
   code,
 }: CountryCardProps) {
   return (
-    <Link to={`/country/${code}`} className="no-underline">
-    <div className="bg-white dark:bg-elDark rounded overflow-hidden shadow-md mx-auto w-64">
+    <Link to={`/country/${code}`} className="no-underline max-w-80">
+    <div className="h-full bg-elLight dark:bg-elDark rounded overflow-hidden shadow">
       <img
         src={flag}
         alt={`Flag of ${name}`}

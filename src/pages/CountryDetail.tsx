@@ -60,21 +60,23 @@ export default function CountryDetail() {
 
   return (
     <div className="max-w-7xl mx-auto p-8">
-      <Link
-        to="/"
-        className="flex w-fit items-center gap-2 mb-8 px-8 py-2 bg-elLight dark:bg-elDark rounded shadow-md"
-      >
-        <FontAwesomeIcon icon={faArrowLeft} className="pointer-events-none" />
-        Back
-      </Link>
-      <div className="grid md:grid-cols-2 items-center gap-8">
+      <div className="grid lg:grid-cols-2 justify-center gap-8">
+        <Link
+          to="/"
+          className="lg:col-span-2 flex w-fit items-center gap-2 px-8 py-2 bg-elLight dark:bg-elDark rounded shadow-md"
+        >
+          <FontAwesomeIcon icon={faArrowLeft} className="pointer-events-none" />
+          Back
+        </Link>
         <img
           src={country.flags.svg}
           alt={`flag of ${country.name.common}`}
           className="w-full max-w-lg h-auto object-cover shadow-md"
         />
-        <div className="grid md:grid-cols-2 gap-8">
-          <h1 className="text-2xl font-bold sm:col-span-2">{country.name.common}</h1>
+        <div className="max-w-lg grid md:grid-cols-2 gap-8">
+          <h1 className="text-2xl font-bold sm:col-span-2">
+            {country.name.common}
+          </h1>
           <div className="grid gap-3 place-content-start">
             <p>
               <strong>Native Name:</strong> {nativeName}
@@ -104,8 +106,8 @@ export default function CountryDetail() {
             </p>
           </div>
           {borderCountries.length > 0 && (
-            <div className="mt-6 sm:col-span-2">
-              <h2 className="text-xl font-semibold mb-6">Border Countries:</h2>
+            <div className="mt-6 sm:col-span-2 flex gap-4 flex-wrap items-center">
+              <h2 className="text-xl font-semibold">Border Countries:</h2>
               <div className="flex flex-wrap gap-2">
                 {borderCountries.map((border) => (
                   <Link
